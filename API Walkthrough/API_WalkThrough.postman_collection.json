@@ -1,0 +1,642 @@
+{
+	"info": {
+		"_postman_id": "12a32ea9-dcda-4ac6-b6b4-cf3da8f4b4a9",
+		"name": "API_WalkThrough",
+		"description": "# Introduction\nThis is API to login to Mojo services and access data\n\n# Overview\nThings that the developers should know about\n\n# Authentication\nWhat is the preferred way of using the API?\n\n# Error Codes\nWhat errors and status codes can a user expect?\n\n# Rate limit\nIs there a limit to the number of requests an user can send?",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login to MLP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "cfd8dcc5-5705-4c62-bba1-263ac18f3632",
+						"type": "text/javascript",
+						"exec": [
+							"pm.response.to.be.ok;",
+							"pm.environment.set(\"MLP_COOKIE\", postman.getResponseCookie(\"ATN_CLOUD_DASHBOARD\").value);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "https://{{mlp-domain}}/rest/api/v2/kvs/login?key_id={{api_key_id}}&key_value={{api_key_value}}",
+					"protocol": "https",
+					"host": [
+						"{{mlp-domain}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"v2",
+						"kvs",
+						"login"
+					],
+					"query": [
+						{
+							"key": "key_id",
+							"value": "{{api_key_id}}"
+						},
+						{
+							"key": "key_value",
+							"value": "{{api_key_value}}"
+						}
+					]
+				},
+				"description": "Login Using key\n"
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch AMC services Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8a2a63cb-550d-4a3c-97e0-8f10ee3a3187",
+						"type": "text/javascript",
+						"exec": [
+							"pm.response.to.be.ok;",
+							"pm.response.to.be.withBody;",
+							"var myCollection = require('postman-collection');",
+							"console.log(pm.response.json());",
+							"var res=pm.response.json();",
+							"var ser_url=res.data.customerServices[0].service.service_url;",
+							"console.log(ser_url);",
+							"var url= new myCollection.Url(ser_url);",
+							"var mwm_host= url.getHost();",
+							"pm.environment.set(\"mwm-domain\", mwm_host);",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "ATN_CLOUD_DASHBOARD={{MLP_COOKIE}}; path=/; domain={{mlp-domain}};"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://{{mlp-domain}}/rest/api/v2/services?type=amc",
+					"protocol": "https",
+					"host": [
+						"{{mlp-domain}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"v2",
+						"services"
+					],
+					"query": [
+						{
+							"key": "type",
+							"value": "amc"
+						}
+					]
+				},
+				"description": "Fetch AMC Service\n"
+			},
+			"response": []
+		},
+		{
+			"name": "MWM login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3813949c-0c8f-4605-835c-7598b8722e30",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"JSESSIONID\", postman.getResponseCookie(\"JSESSIONID\").value);",
+							"console.log(pm.environment.get(\"JSESSIONID\"));",
+							"",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"{{api_key_id}}\", \"keyValue\":\"{{api_key_value}}\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/login/key/mod/3600",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"login",
+						"key",
+						"mod",
+						"3600"
+					]
+				},
+				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+			},
+			"response": []
+		},
+		{
+			"name": "Get location tree",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9c99a48e-e4ba-4e38-b747-2f9223cab7ee",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "93eb9fe7-710a-4b30-8f2f-634c8292ef30",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/v6/locations",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"v6",
+						"locations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get managed devices",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/v3/devices/manageddevices?offset=0&limit=5",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"v3",
+						"devices",
+						"manageddevices"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "0"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						}
+					]
+				},
+				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+			},
+			"response": []
+		},
+		{
+			"name": "get clients",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/v3/devices/clients/0/25",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"v3",
+						"devices",
+						"clients",
+						"0",
+						"25"
+					]
+				},
+				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Visibility Analytics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "693d1192-f056-4c1b-ab68-cc4d227fa5a7",
+						"type": "text/javascript",
+						"exec": [
+							"pm.response.to.be.ok; // info, success, redirection, clientError,  serverError, are other variants",
+							"pm.response.to.be.withBody;",
+							"pm.environment.set(\"file-dwnld-path\",pm.response.text());",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/V2/analytics/visibilitydata/{{startdate}}/{{enddate}}",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"V2",
+						"analytics",
+						"visibilitydata",
+						"{{startdate}}",
+						"{{enddate}}"
+					]
+				},
+				"description": "This call helps you fetch the visibility analytics data from the MWM.\nPlease assign appropriate values to mwm-domain, startdate and enddate variable.\nYou need to make a successfull login call before executing this API call.\nThe response from this API call should be used to form the URL to download the file\n\nAPI Help: http://prod.mojonetworks.com/WebAPI/source/v2/analytics/getVisibility_v2.html"
+			},
+			"response": []
+		},
+		{
+			"name": "Download file",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc2b8587-e1e4-4141-b0d2-e1a0bcbefb91",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.unset(\"file-dwnld-path\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/{{file-dwnld-path}}",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"{{file-dwnld-path}}"
+					]
+				},
+				"description": "This API call helps you to download the specified file from the MWM server\nPlease set the appropriate value for mwm-domain.\n\nThe FILE_URL should be replaced by the response of Get Association/Visibility Analytics API call."
+			},
+			"response": []
+		},
+		{
+			"name": "Get associated analytics",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "536c143a-dc5d-4954-82de-48c8fb39a9ed",
+						"type": "text/javascript",
+						"exec": [
+							"pm.response.to.be.ok; // info, success, redirection, clientError,  serverError, are other variants",
+							"pm.response.to.be.withBody;",
+							"pm.environment.set(\"file-dwnld-path\",pm.response.text());"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/V2/analytics/associationdata/{{startdate}}/{{enddate}}",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"V2",
+						"analytics",
+						"associationdata",
+						"{{startdate}}",
+						"{{enddate}}"
+					]
+				},
+				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+			},
+			"response": []
+		},
+		{
+			"name": "Download file ",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "da74b508-0beb-4060-8fae-918aec41f3cc",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.unset(\"file-dwnld-path\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"type\": \"apikeycredentials\", \"keyId\": \"KEY-ATN563392-348\", \"keyValue\":\"1e9c55fd404a3ce7676f32c2c817c186\"}"
+				},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/{{file-dwnld-path}}",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"{{file-dwnld-path}}"
+					]
+				},
+				"description": "This API call helps you to download the specified file from the MWM server\nPlease set the appropriate value for mwm-domain.\n\nThe FILE_URL should be replaced by the response of Get Association/Visibility Analytics API call."
+			},
+			"response": []
+		},
+		{
+			"name": "GetAP Classification Policy",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/v4/policies/apclassification/false?locationid=0",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"v4",
+						"policies",
+						"apclassification",
+						"false"
+					],
+					"query": [
+						{
+							"key": "locationid",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout of MWM",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a9c6565-7f5d-4040-bbdf-67a8901a42d0",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.unset(\"JSESSIONID\");",
+							"pm.environment.unset(\"mwm-domain\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "cookie",
+						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://{{mwm-domain}}/new/webservice/logout",
+					"protocol": "https",
+					"host": [
+						"{{mwm-domain}}"
+					],
+					"path": [
+						"new",
+						"webservice",
+						"logout"
+					]
+				},
+				"description": "Logout of MWM server"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout MLP",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a172d9f5-7b4c-4030-87cc-595aa1750f37",
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.unset(\"MLP_COOKIE\");"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "cookie",
+						"value": "ATN_CLOUD_DASHBOARD={{MLP_COOKIE}}; path=/; domain={{mlp-domain}};"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "https://{{mlp-domain}}/rest/api/v2/kvs/logout",
+					"protocol": "https",
+					"host": [
+						"{{mlp-domain}}"
+					],
+					"path": [
+						"rest",
+						"api",
+						"v2",
+						"kvs",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "3ece9a60-85a3-4a52-a62a-b5efc5fd98ef",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "9f97fad0-6e49-4d22-bb4b-68d7703bc58f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "7eb57855-e3ab-4002-94cd-4f78eed838d2",
+			"key": "mlp-domain",
+			"value": "alpha-dashboard.mojonetworks.com",
+			"type": "string"
+		},
+		{
+			"id": "e112c525-200a-48c8-a5df-1b7179ec65d9",
+			"key": "api_key_id",
+			"value": "KEY-ATN33-28",
+			"type": "string"
+		},
+		{
+			"id": "84da0e6d-585f-42c7-a21b-b2000fe646ae",
+			"key": "api_key_value",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "c6175fda-1c05-476c-8b57-9640267a0feb",
+			"key": "startdate",
+			"value": "1525890600000",
+			"type": "string"
+		},
+		{
+			"id": "f4e3ca2f-440a-4f09-9110-2620982cf454",
+			"key": "enddate",
+			"value": "1526558820181",
+			"type": "string"
+		}
+	]
+}
