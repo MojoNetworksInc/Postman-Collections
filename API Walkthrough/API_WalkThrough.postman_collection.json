@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "12a32ea9-dcda-4ac6-b6b4-cf3da8f4b4a9",
+		"_postman_id": "614b05af-5134-44fb-b3e4-3608c2f9e319",
 		"name": "API_WalkThrough",
-		"description": "# Introduction\nThis is API to login to Mojo services and access data\n\n# Overview\nThings that the developers should know about\n\n# Authentication\nWhat is the preferred way of using the API?\n\n# Error Codes\nWhat errors and status codes can a user expect?\n\n# Rate limit\nIs there a limit to the number of requests an user can send?",
+		"description": "# Introduction\nThis is a collection of Mojo APIs that walks you through the Login to Mojo Cloud services and running few basic API calls in Mojo Wireless Manager to access data.\n\n\n# Overview\nThe collection goes through loging in to Mojo Cloud and fetching the Mojo Wireless Manager services list. You then login to the first Mojo Wireless Manager service from the list and run the remaining API calls. You must set the following variables before running this collection:\n* mlp-dpmain: The domain name for your Mojo Cloud.\n* api_key_id: The ID of the API key created in Mojo Launchpad. \n* api_key_value: The corresponding key value.\n* startdate: The startdate in Epoch of the duration for which the analytics data has to be fecthed.\n* enddate: The end date in Epoch of the duration for which the analytocs data has to be fetched.\n\nIf you are running the individual APIs separately, then you must set the appropriate variable values in the URL and in the Request Body, if applicable. Check the descriptions for the individual APIs.\n\n\n# Authentication\nEnsure that you have defined an API key in Mojo Launchpad and assigned the appropriate privileges on the key for Mojo Launchpad and Mojo Wireless Manager services in your cloud account.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Login to MLP",
+			"name": "Log in to MLP",
 			"event": [
 				{
 					"listen": "test",
@@ -25,7 +25,10 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "https://{{mlp-domain}}/rest/api/v2/kvs/login?key_id={{api_key_id}}&key_value={{api_key_value}}",
 					"protocol": "https",
@@ -50,12 +53,12 @@
 						}
 					]
 				},
-				"description": "Login Using key\n"
+				"description": "Log in to Mojo Cloud using API key that you have created in Mojo Launchpad. Set the value for mlp-domain, api_key_id and api_key_value in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "Fetch AMC services Copy",
+			"name": "Fetch MWM Services",
 			"event": [
 				{
 					"listen": "test",
@@ -86,7 +89,10 @@
 						"value": "ATN_CLOUD_DASHBOARD={{MLP_COOKIE}}; path=/; domain={{mlp-domain}};"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "https://{{mlp-domain}}/rest/api/v2/services?type=amc",
 					"protocol": "https",
@@ -106,12 +112,12 @@
 						}
 					]
 				},
-				"description": "Fetch AMC Service\n"
+				"description": "Fetch the list of Mojo Wireless Manager services from your cloud account. Set the value for the mlp-domain in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "MWM login",
+			"name": "Log in to MWM",
 			"event": [
 				{
 					"listen": "test",
@@ -154,12 +160,12 @@
 						"3600"
 					]
 				},
-				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+				"description": "Log in to the Mojo Wireless Manager service. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL. Also specify the appropriate values for api_key_id and api_key_value in the Body."
 			},
 			"response": []
 		},
 		{
-			"name": "Get location tree",
+			"name": "Fetch the Location Tree",
 			"event": [
 				{
 					"listen": "test",
@@ -206,12 +212,13 @@
 						"v6",
 						"locations"
 					]
-				}
+				},
+				"description": "Fetch the location tree from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "get managed devices",
+			"name": "Fetch the Managed Devices List",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -248,12 +255,12 @@
 						}
 					]
 				},
-				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+				"description": "Fetch a paged list of managed devices from Mojo Wireless Manager. Managed devices are the Mojo APs that are connected to your Mojo Wireless Manager service. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "get clients",
+			"name": "Fetch Clients List",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -282,12 +289,12 @@
 						"25"
 					]
 				},
-				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+				"description": "Fetch a paged list of WiFi clients from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "Get Visibility Analytics",
+			"name": "Fetch Visibility Analytics",
 			"event": [
 				{
 					"listen": "test",
@@ -331,12 +338,12 @@
 						"{{enddate}}"
 					]
 				},
-				"description": "This call helps you fetch the visibility analytics data from the MWM.\nPlease assign appropriate values to mwm-domain, startdate and enddate variable.\nYou need to make a successfull login call before executing this API call.\nThe response from this API call should be used to form the URL to download the file\n\nAPI Help: http://prod.mojonetworks.com/WebAPI/source/v2/analytics/getVisibility_v2.html"
+				"description": "Fetch the visibility analytics data from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain and the startdate and enddate of duration for which the data must be fetched in the URL. The value for startdate and enddate must be in the Epoch format. The API returns a partial URL that can be used to download the analytics file from Mojo Wireless Manager."
 			},
 			"response": []
 		},
 		{
-			"name": "Download file",
+			"name": "Download Visibility Analytics File",
 			"event": [
 				{
 					"listen": "test",
@@ -372,12 +379,12 @@
 						"{{file-dwnld-path}}"
 					]
 				},
-				"description": "This API call helps you to download the specified file from the MWM server\nPlease set the appropriate value for mwm-domain.\n\nThe FILE_URL should be replaced by the response of Get Association/Visibility Analytics API call."
+				"description": "Download the file from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL. Specify the partial URL from the previous call as the value for file-dwnld-path."
 			},
 			"response": []
 		},
 		{
-			"name": "Get associated analytics",
+			"name": "Fetch Associated Analytics",
 			"event": [
 				{
 					"listen": "test",
@@ -420,12 +427,12 @@
 						"{{enddate}}"
 					]
 				},
-				"description": "Generated from a curl request: \ncurl --verbose -c cookies -H \\\"Content-Type: application/json\\\" -X POST -d '{\\\"type\\\": \\\"apikeycredentials\\\", \\\"keyId\\\": \\\"KEY-ATN563392-348\\\", \\\"keyValue\\\":\\\"1e9c55fd404a3ce7676f32c2c817c186\\\"}' https://mwm-at31005.mojonetworks.com/new/webservice/login/key/mod/3600"
+				"description": "Fetch the associated analytics data from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain and the startdate and enddate of duration for which the data must be fetched in the URL. The value for startdate and enddate must be in the Epoch format. The API returns a partial URL that can be used to download the analytics file from Mojo Wireless Manager."
 			},
 			"response": []
 		},
 		{
-			"name": "Download file ",
+			"name": "Download Associated Analytics File",
 			"event": [
 				{
 					"listen": "test",
@@ -461,12 +468,12 @@
 						"{{file-dwnld-path}}"
 					]
 				},
-				"description": "This API call helps you to download the specified file from the MWM server\nPlease set the appropriate value for mwm-domain.\n\nThe FILE_URL should be replaced by the response of Get Association/Visibility Analytics API call."
+				"description": "Download the file from Mojo Wireless Manager. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL. Specify the partial URL from the previous call as the value for file-dwnld-path."
 			},
 			"response": []
 		},
 		{
-			"name": "GetAP Classification Policy",
+			"name": "Get AP Classification Policy",
 			"request": {
 				"method": "GET",
 				"header": [
@@ -475,7 +482,10 @@
 						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "https://{{mwm-domain}}/new/webservice/v4/policies/apclassification/false?locationid=0",
 					"protocol": "https",
@@ -496,12 +506,13 @@
 							"value": "0"
 						}
 					]
-				}
+				},
+				"description": "Fetch the AP Classification policy defined at the specified location. Specify the Mojo Wireless Manager service domain as mwm-domain in the URL."
 			},
 			"response": []
 		},
 		{
-			"name": "Logout of MWM",
+			"name": "Log out of MWM",
 			"event": [
 				{
 					"listen": "test",
@@ -527,7 +538,10 @@
 						"value": "JSESSIONID={{JSESSIONID}}; path=/; domain={{mwm-domain}};"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "https://{{mwm-domain}}/new/webservice/logout",
 					"protocol": "https",
@@ -540,12 +554,12 @@
 						"logout"
 					]
 				},
-				"description": "Logout of MWM server"
+				"description": "Log out from Mojo Wireless Manager."
 			},
 			"response": []
 		},
 		{
-			"name": "Logout MLP",
+			"name": "Log out of MLP",
 			"event": [
 				{
 					"listen": "test",
@@ -566,7 +580,10 @@
 						"value": "ATN_CLOUD_DASHBOARD={{MLP_COOKIE}}; path=/; domain={{mlp-domain}};"
 					}
 				],
-				"body": {},
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
 				"url": {
 					"raw": "https://{{mlp-domain}}/rest/api/v2/kvs/logout",
 					"protocol": "https",
@@ -580,7 +597,8 @@
 						"kvs",
 						"logout"
 					]
-				}
+				},
+				"description": "Log out from Mojo Launchpad."
 			},
 			"response": []
 		}
